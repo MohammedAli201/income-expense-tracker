@@ -1,0 +1,47 @@
+.add-trans-container {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.add-trans-container h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.add-trans-form .form-control {
+    margin-bottom: 15px;
+}
+
+.add-trans-form .form-control label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.add-trans-form .form-control input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-trans-form .btn {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-trans-form .btn:hover {
+    background-color: #218838;
+}
