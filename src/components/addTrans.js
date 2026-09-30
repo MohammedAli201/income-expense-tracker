@@ -1,81 +1,45 @@
 import React, { useState } from "react";
 import useTrans from "../hooks/useTrans";
-import "../assets/styles/addTrans.css";
-const AddTrans = () => {
-    const [text, setText] = useState("");
-    const [amount, setAmount] = useState(0);
-    const [date, setDate] = useState("");
-    const [category, setCategory] = useState("");
 
-    const { state, addTransaction } = useTrans();
+export default function AddTrans() {
+  const [text, setText] = useState("");
+  const [amount, setAmount] = useState("");
+  const [date, setDate] = useState("");
+  const [category, setCategory] = useState("");
+  const [type, setType] = useState("expense");
+  const [message, setMessage] = useState("");
+  const { addTransaction } = useTrans();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        addTransaction({
-            id: state.transactions.length + 1,
-            text,
-            amount: Number(amount),
-            date,
-            category,
-        });
-        setText("");
-        setAmount(0);
-        setDate("");
-        setCategory("");
-    };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const numericAmount = Number(amount);
+    if (!text.trim() || !category.trim() || !date || !Number.isFinite(numericAmount) || numericAmount <= 0) {
+      setMessage("Enter a description, category, date and an amount greater than zero.");
+      return;
+    }
+    addTransaction({ text: text.trim(), amount: (type === "expense" ? -1 : 1) * numericAmount, date, category: category.trim() });
+    setText(""); setAmount(""); setDate(""); setCategory("");
+    setMessage("Entry added.");
+  };
 
-    return (
-        <div className="add-trans-container">
-            <h3>Add New Transaction</h3>
-            <form onSubmit={handleSubmit} className="add-trans-form">
-                <div className="form-control">
-                    <label htmlFor="text">Text</label>
-                    <input
-                        type="text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        placeholder="Enter text..."
-                        required
-                    />
-                </div>
-                <div className="form-control">
-                    <label htmlFor="amount">
-                        Amount <br />
-                        (negative - expense, positive - income)
-                    </label>
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Enter amount..."
-                        required
-                    />
-                </div>
-                <div className="form-control">
-                    <label htmlFor="date">Date</label>
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-control">
-                    <label htmlFor="category">Category</label>
-                    <input
-                        type="text"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        placeholder="Enter category..."
-                        required
-                    />
-                </div>
-                <button className="btn" type="submit">
-                    Add Transaction
-                </button>
-            </form>
+  return (
+    <section className="panel entry-panel" aria-labelledby="add-heading">
+      <div className="panel-header"><span className="section-number">01</span><h2 id="add-heading">Add an entry</h2></div>
+      <p className="panel-description">Keep track of what comes in. And what goes out.</p>
+      <form onSubmit={handleSubmit} className="entry-form">
+        <label htmlFor="entry-type">Entry type</label>
+        <select id="entry-type" value={type} onChange={event => setType(event.target.value)}><option value="expense">Expense</option><option value="income">Income</option></select>
+        <label htmlFor="entry-text">Description</label>
+        <input id="entry-text" value={text} onChange={event => setText(event.target.value)} placeholder="e.g. Weekly groceries" maxLength={120} required />
+        <label htmlFor="entry-amount">Amount (NOK)</label>
+        <input id="entry-amount" type="number" min="0.01" step="0.01" value={amount} onChange={event => setAmount(event.target.value)} placeholder="0.00" required />
+        <div className="field-pair">
+          <div><label htmlFor="entry-date">Date</label><input id="entry-date" type="date" value={date} onChange={event => setDate(event.target.value)} required /></div>
+          <div><label htmlFor="entry-category">Category</label><input id="entry-category" value={category} onChange={event => setCategory(event.target.value)} placeholder="e.g. Food" maxLength={60} required /></div>
         </div>
-    );
-};
-
-export default AddTrans;
+        <button className="primary-button" type="submit">Add entry <span aria-hidden="true">+</span></button>
+        <p className="form-message" role="status">{message}</p>
+      </form>
+    </section>
+  );
+}
